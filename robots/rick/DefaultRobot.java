@@ -1,4 +1,4 @@
-package jackson.rick;
+package rick;
 import robocode.*;
 
 /**

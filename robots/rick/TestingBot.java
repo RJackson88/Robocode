@@ -1,4 +1,4 @@
-package jackson.rick;
+package rick;
 import robocode.*;
 import robocode.util.*;
 import robocode.util.Utils;
@@ -6,29 +6,26 @@ import robocode.util.Utils;
 /**
  * Created by rickjackson on 2/27/17.
  */
-public class WorkingRobot extends AdvancedRobot {
+public class TestingBot extends AdvancedRobot {
     double previousEnergy = 100;
     int movementDirection = 1;
     int gunDirection = 1;
     
     public void run() {
         setAdjustGunForRobotTurn(true);
-        turnRadarRight(Double.POSITIVE_INFINITY);
+        turnRadarRightRadians(Double.POSITIVE_INFINITY);
         setAdjustRadarForGunTurn(true);
         setTurnGunRight(99999);
-        
-        while (true) {
-            ahead(100);
-            back(100);
-        }
+    
     }
     
     public void onScannedRobot(ScannedRobotEvent e) {
-        double absoluteBearing = e.getBearing() + getHeading();
+        double absoluteBearing = e.getBearingRadians() + getHeadingRadians();
         double laterVelocity = e.getVelocity()
-                               * getHeading();
+                               * Math.sin(e.getHeadingRadians());
         double gunTurnAmount;
-        setTurnLeft(getRadarTurnRemaining());
+        
+        setTurnRadarLeftRadians(getRadarTurnRemainingRadians());
         
         if (Math.random() > .9) {
             setMaxVelocity((12 * Math.random()) + 12);
@@ -37,21 +34,21 @@ public class WorkingRobot extends AdvancedRobot {
         if (e.getDistance() > 150) {
             gunTurnAmount =
                     Utils.normalRelativeAngle(absoluteBearing
-                                              - getGunHeading()
+                                              - getGunHeadingRadians()
                                               + laterVelocity / 22);
-            setTurnGunRight(gunTurnAmount);
-            setTurnRight(
+            setTurnGunRightRadians(gunTurnAmount);
+            setTurnRightRadians(
                     Utils.normalRelativeAngle(absoluteBearing
-                                              - getHeading()
+                                              - getHeadingRadians()
                                               + laterVelocity / getVelocity()));
             setAhead((e.getDistance() - 140) * movementDirection);
-            setFire(2);
+            setFire(3);
         } else {
             gunTurnAmount =
                     Utils.normalRelativeAngle(absoluteBearing
-                                              - getGunHeading()
+                                              - getGunHeadingRadians()
                                               + laterVelocity / 15);
-            setTurnGunRight(gunTurnAmount);
+            setTurnGunRightRadians(gunTurnAmount);
             setTurnLeft(-90 - e.getBearing());
             setAhead((e.getDistance() - 140 * movementDirection));
             setFire(3);
